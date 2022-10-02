@@ -241,7 +241,7 @@ class TransactionController extends Controller
 
     public function laporan($id){
         $transaksi = Transcation::with('productTranscation')->find($id);
-        return view('laporan.transaksi',compact('transaksi'));
+        return view('receipt.transaksi',compact('transaksi'));
     }
 
 
