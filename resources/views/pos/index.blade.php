@@ -23,7 +23,7 @@
                                         class="form-control form-control-sm col-sm-12 float-right"
                                         placeholder="Search Product..." onblur="this.form.submit()"></div>
                                 <div class="col-sm-3"><button type="submit"
-                                        class="btn btn-primary btn-sm float-right btn-block">Cari Product</button></div>
+                                        class="btn btn-primary btn-sm float-right btn-block">Search Product</button></div>
                             </div>
                         </form>
                     </div>

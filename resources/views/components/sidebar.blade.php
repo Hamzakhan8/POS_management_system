@@ -10,13 +10,13 @@
             </li>
 
             <li><a  href="{{route('products.index')}}" aria-expanded="false">
-                    <i class="flaticon-381-layer-1"></i>
+                   <i class="fas fa-warehouse"></i>
                     <span class="nav-text">products</span>
                 </a>
 
             </li>
             <li><a  href="{{url('/transcation/history')}}" aria-expanded="false">
-                <i class="fa fa"></i>
+               <i class="far fa-file"></i>
                 <span class="nav-text">sales reports</span>
             </a>
 
