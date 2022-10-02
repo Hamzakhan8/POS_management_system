@@ -88,10 +88,10 @@ class ProductController extends Controller
                     ]);
                 }
 
-                $message = 'Data Berhasil di update';
+                $message = 'product updated successfully!!';
 
                 DB::commit();
-                return redirect()->back()->with('success',$message);
+                return redirect()->route('products.index')->with('success',$message);
             }else{
                 $this->validate($request, [
                     'name' => 'required|min:2|max:200',
@@ -125,7 +125,7 @@ class ProductController extends Controller
                     'tipe' => 'created product'
                 ]);
 
-                $message = 'Data Berhasil di simpan';
+                $message = 'Data successfully saved';
 
                 DB::commit();
                 return redirect()->route('products.index')->with('success',$message);
@@ -163,5 +163,5 @@ class ProductController extends Controller
 
     }
 
-   
+
 }

@@ -1,7 +1,8 @@
-@extends('layouts.app')
-<!-- © 2020 Copyright: Tahu Coding -->
+@extends('layouts.master')
+@section('title','pos')
 @section('content')
-<div class="container">
+<div class="content-body">
+    <div class="container-fluid">
     <div class="row">
         <div class="col">
             <div class="card" style="min-height: 85vh">

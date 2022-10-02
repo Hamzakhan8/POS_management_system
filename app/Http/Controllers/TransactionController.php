@@ -6,14 +6,14 @@ use DB;
 use Auth;
 use Cart;
 use App\Product;
-//sorry kalau ada typo dalam penamaan dalam bahasa inggris
+
 use App\Transcation;
 use App\HistoryProduct;
 use App\ProductTranscation;
 
 use Illuminate\Http\Request;
 
-//import dulu packagenya biar bs dipake
+
 use Darryldecode\Cart\CartCondition;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
@@ -39,9 +39,8 @@ class TransactionController extends Controller
 
         $condition = new \Darryldecode\Cart\CartCondition(array(
                 'name' => 'pajak',
-                'type' => 'tax', //tipenya apa
-                'target' => 'total', //target kondisi ini apply ke mana (total, subtotal)
-                'value' => $tax, //contoh -12% or -10 or +10 etc
+                'type' => 'tax',
+                'value' => $tax,
                 'order' => 1
             ));
 
@@ -68,7 +67,7 @@ class TransactionController extends Controller
 
         }
 
-        //total
+
         $sub_total = \Cart::session(Auth()->id())->getSubTotal();
         $total = \Cart::session(Auth()->id())->getTotal();
 
@@ -81,13 +80,7 @@ class TransactionController extends Controller
             'tax' => $pajak
         ];
 
-        //kembangin biar no reload make ajax
-        //saran bagi yg mau kembangin bisa pake jquery atau .js native untuk manggil ajax jangan lupa product, cart item dan total dipisah
-        //btw saya lg mager bikin beginian.. jadi sayas serahkan sama kalian ya (yang penting konsep dan fungsi aplikasi dah kelar 100%)
 
-        //kembangin jadi SPA make react.js atau vue.js (tapi bagusnya backend sama frontend dipisah | backend cuma sebagai penyedia token sama restfull api aja)
-        //kalau make SPA kayaknya agak sulit deh krn ini package default nyimpan cartnya disession, tapi kalau gak salah didokumentasinya
-        //bilang kalau ini package bisa store datanya di database
         return view('pos.index', compact('products','cart_data','data_total'));
     }
 
@@ -253,4 +246,4 @@ class TransactionController extends Controller
 
 
 }
-//© 2020 Copyright: Tahu Coding
+

@@ -1,8 +1,8 @@
-@extends('layouts.app')
-
+@extends('layouts.master')
+@section('title','pos')
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
+<div class="content-body">
+    <div class="container-fluid">
         <div class="col-md-8">
             <div class="card" style="min-height: 85vh">
                 <div class="card-header">{{ __('Register') }}</div>

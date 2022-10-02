@@ -169,8 +169,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <a class="btn btn-primary btn-sm "
-                                    style="padding:1rem!important" href="{{url('/transcation/history')}}" target="_blank">History</a>
-                                <!-- Kembangkan sendiri ya bagian ini, logikanya kita simpan cartnya sementara dalam databse ntar kalau butuh keluarin lagi-->
+                                    style="padding:1rem!important" href="{{url('/transcation/history')}}" target="_blank">Print</a>
                             </div>
                             <div class="col-sm-4">
                                 <button class="btn btn-success btn-sm " style="padding:1rem!important"

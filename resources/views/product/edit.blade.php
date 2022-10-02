@@ -1,8 +1,8 @@
-@extends('layouts.app')
-<!-- © 2020 Copyright: Tahu Coding -->
+@extends('layouts.master')
+@section('title','pos')
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
+<div class="content-body">
+    <div class="container-fluid">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-white">
@@ -12,8 +12,9 @@
                         </label>
                         @method('delete')
                         @csrf
-                        <button class="btn btn-danger btn-sm float-right"
-                            onclick="return confirm('Apakah anda yakin menghapus data ini ?');">Delete Product</button>
+                        <button class="btn btn-danger btn-sm float-right "
+                            style="display: flex;position:relative;left:540px; !important"
+                            onclick="return confirm('are you sure you want to delete this product ?');">Delete Product</button>
                     </form>
                 </div>
                 <div class="card-body">
