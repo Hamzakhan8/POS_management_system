@@ -15,7 +15,7 @@ use Intervention\Image\Facades\Image;
 class ProductController extends Controller
 {
     public function index(){
-       
+
         $products = Product::when(request('search'), function($query){
                         return $query->where('name','like','%'.request('search').'%');
                     })
@@ -28,7 +28,7 @@ class ProductController extends Controller
         return view('product.create');
     }
 
-    public function store(Request $request){       
+    public function store(Request $request){
 
         DB::beginTransaction();
 
@@ -39,7 +39,7 @@ class ProductController extends Controller
                 $this->validate($request, [
                     'name' => 'required|min:2|max:200',
                     'price' => 'required',
-                    'description' => 'required', 
+                    'description' => 'required',
                 ]);
 
                 if($request->addQty){
@@ -60,11 +60,11 @@ class ProductController extends Controller
                     })->save(public_path('uploads/images/' . $new_gambar));
 
                     File::delete(public_path($product_id->image));
-                    
+
                     $product = [
                         'name' => $request->name,
-                        'price' => $request->price,     
-                        'qty' => $qty,          
+                        'price' => $request->price,
+                        'qty' => $qty,
                         'image' => 'uploads/images/'.$new_gambar,
                         'description' => $request->description,
                     ];
@@ -72,8 +72,8 @@ class ProductController extends Controller
                 else{
                     $product = [
                         'name' => $request->name,
-                        'price' => $request->price,     
-                        'qty' => $qty,                         
+                        'price' => $request->price,
+                        'qty' => $qty,
                         'description' => $request->description,
                     ];
                 }
@@ -87,18 +87,18 @@ class ProductController extends Controller
                         'tipe' => 'change product qty from admin'
                     ]);
                 }
-                
+
                 $message = 'Data Berhasil di update';
 
                 DB::commit();
-                return redirect()->back()->with('success',$message);   
+                return redirect()->back()->with('success',$message);
             }else{
                 $this->validate($request, [
                     'name' => 'required|min:2|max:200',
                     'price' => 'required',
                     'qty' => 'required',
                     'image' => 'mimes:jpeg,jpg,png,gif|required|max:25000',
-                    'description' => 'required', 
+                    'description' => 'required',
                 ]);
 
                 $gambar = $request->image;
@@ -106,12 +106,12 @@ class ProductController extends Controller
 
                 $product = Product::create([
                         'name' => $request->name,
-                        'price' => $request->price,     
-                        'qty' => $request->qty,          
+                        'price' => $request->price,
+                        'qty' => $request->qty,
                         'image' => 'uploads/images/'.$new_gambar,
                         'description' => $request->description,
                         'user_id' => Auth::id()
-                ]);        
+                ]);
 
                 Image::make($gambar->getRealPath())->resize(null, 200, function ($constraint) {
                     $constraint->aspectRatio();
@@ -128,17 +128,17 @@ class ProductController extends Controller
                 $message = 'Data Berhasil di simpan';
 
                 DB::commit();
-                return redirect()->route('products.index')->with('success',$message);   
-            }            
+                return redirect()->route('products.index')->with('success',$message);
+            }
         }
         catch(\Exeception $e){
             DB::rollback();
             return redirect()->route('products.create')->with('error',$e);
-        }         
+        }
     }
 
     public function edit($id){
-        
+
         $product = Product::find($id);
         $history = HistoryProduct::where('product_id',$id)->orderBy('created_at','desc')->get();
         return view('product.edit',compact('product','history'));
@@ -150,18 +150,18 @@ class ProductController extends Controller
         try{
         $product = Product::find($id);
         $product->delete();
-        File::delete(public_path($product->image));       
+        File::delete(public_path($product->image));
 
         DB::commit();
-        return redirect()->route('products.index')->with('success','Product berhasil dihapus');                             
+        return redirect()->route('products.index')->with('success','Product deleted successfully');
         }
         catch(\Exeception $e){
-            DB::rollback();      
-            return redirect()->route('products.index')->with('error',$e);      
-        }  
+            DB::rollback();
+            return redirect()->route('products.index')->with('error',$e);
+        }
 
-        
+
     }
 
-    //© 2020 Copyright: Tahu Coding
+   
 }

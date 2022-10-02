@@ -1,19 +1,22 @@
-@extends('layouts.app')
-<!-- © 2020 Copyright: Tahu Coding -->
+@extends('layouts.master')
+@section('title','pos')
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
+<div class="content-body">
+ <div class="container-fluid">
+    <div class="row ">
         <div class="col-md-12">
             <div class="card" style="min-height: 85vh">
-                <div class="card-header bg-white">
+                <div class="card-header bg-white  ">
                     <form action="{{ route('products.index') }}" method="get">
-                        <div class="row">  
-                            <div class="col"><h4 class="font-weight-bold">Products</h4></div>
-                            <div class="col"><input type="text" name="search"
+                        <div class="row col-lg-12">
+                            <div class="col-"><h4 class="font-weight-bold">Products</h4></div>
+                            <div class="col-lg-4"><input type="text" name="search"
                                     class="form-control form-control-sm col-sm-10 float-right"
                                     placeholder="Search Product..." onblur="this.form.submit()"></div>
-                            <div class="col-sm-2"><a href="{{ url('/products/create')}}"
-                                    class="btn btn-primary btn-sm float-right btn-block">Add Product</a></div>
+                            <div class="col-sm-2">
+                                <a href="{{ url('/products/create')}}"
+                                class="btn btn-primary btn-lg float-right ">Add Product</a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -35,7 +38,7 @@
                                     <h5 class="card-title text-center font-weight-bold"
                                         style="text-transform: capitalize;">
                                         {{ Str::words($product->name,6) }}</h5>
-                                    <p class="card-text text-center">Rp. {{ number_format($product->price,2,',','.') }}
+                                    <p class="card-text text-center">Rs. {{ number_format($product->price,2,',','.') }}
                                     </p>
                                     <a href="{{ route('products.edit', $product->id) }}"
                                         class="btn btn-primary btn-block btn-sm">Details</a>
@@ -49,7 +52,9 @@
             </div>
         </div>
     </div>
-    @endsection
+ </div>
+</div>
+@endsection
 
     @push('style')
     <style>
@@ -69,4 +74,4 @@
 
     </style>
     @endpush
-<!-- © 2020 Copyright: Tahu Coding -->
+

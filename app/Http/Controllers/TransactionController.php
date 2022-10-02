@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers;
 //© 2020 Copyright: Tahu Coding
-use Illuminate\Http\Request;
+use DB;
+use Auth;
+use Cart;
 use App\Product;
+//sorry kalau ada typo dalam penamaan dalam bahasa inggris
+use App\Transcation;
 use App\HistoryProduct;
 use App\ProductTranscation;
-//sorry kalau ada typo dalam penamaan dalam bahasa inggris 
-use App\Transcation;
-use Auth;
-use DB;
 
-use Darryldecode\Cart\CartCondition;
+use Illuminate\Http\Request;
 
 //import dulu packagenya biar bs dipake
+use Darryldecode\Cart\CartCondition;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 
 class TransactionController extends Controller
 {
-    public function index(){    
-             
+    public function index(){
+
         //product
         $products = Product::when(request('search'), function($query){
                         return $query->where('name','like','%'.request('search').'%');
@@ -42,14 +43,14 @@ class TransactionController extends Controller
                 'target' => 'total', //target kondisi ini apply ke mana (total, subtotal)
                 'value' => $tax, //contoh -12% or -10 or +10 etc
                 'order' => 1
-            ));                
-            
-        \Cart::session(Auth()->id())->condition($condition);          
+            ));
+
+        \Cart::session(Auth()->id())->condition($condition);
 
         $items = \Cart::session(Auth()->id())->getContent();
-        
+
         if(\Cart::isEmpty()){
-            $cart_data = [];            
+            $cart_data = [];
         }
         else{
             foreach($items as $row) {
@@ -60,19 +61,19 @@ class TransactionController extends Controller
                     'pricesingle' => $row->price,
                     'price' => $row->getPriceSum(),
                     'created_at' => $row->attributes['created_at'],
-                ];           
+                ];
             }
-            
+
             $cart_data = collect($cart)->sortBy('created_at');
 
         }
-        
+
         //total
         $sub_total = \Cart::session(Auth()->id())->getSubTotal();
         $total = \Cart::session(Auth()->id())->getTotal();
 
         $new_condition = \Cart::session(Auth()->id())->getCondition('pajak');
-        $pajak = $new_condition->getCalculatedValue($sub_total); 
+        $pajak = $new_condition->getCalculatedValue($sub_total);
 
         $data_total = [
             'sub_total' => $sub_total,
@@ -86,16 +87,16 @@ class TransactionController extends Controller
 
         //kembangin jadi SPA make react.js atau vue.js (tapi bagusnya backend sama frontend dipisah | backend cuma sebagai penyedia token sama restfull api aja)
         //kalau make SPA kayaknya agak sulit deh krn ini package default nyimpan cartnya disession, tapi kalau gak salah didokumentasinya
-        //bilang kalau ini package bisa store datanya di database 
+        //bilang kalau ini package bisa store datanya di database
         return view('pos.index', compact('products','cart_data','data_total'));
     }
 
     public function addProductCart($id){
-        $product = Product::find($id);      
-                
-        $cart = \Cart::session(Auth()->id())->getContent();        
-        $cek_itemId = $cart->whereIn('id', $id);  
-      
+        $product = Product::find($id);
+
+        $cart = \Cart::session(Auth()->id())->getContent();
+        $cek_itemId = $cart->whereIn('id', $id);
+
         if($cek_itemId->isNotEmpty()){
             if($product->qty == $cek_itemId[$id]->quantity){
                 return redirect()->back()->with('error','jumlah item kurang');
@@ -103,26 +104,26 @@ class TransactionController extends Controller
                 \Cart::session(Auth()->id())->update($id, array(
                     'quantity' => 1
                 ));
-            }            
+            }
         }else{
              \Cart::session(Auth()->id())->add(array(
             'id' => $id,
             'name' => $product->name,
             'price' => $product->price,
-            'quantity' => 1, 
+            'quantity' => 1,
             'attributes' => array(
                 'created_at' => date('Y-m-d H:i:s')
-            )          
+            )
         ));
-        
-        }       
+
+        }
 
         return redirect()->back();
     }
 
     public function removeProductCart($id){
-        \Cart::session(Auth()->id())->remove($id);     
-                         
+        \Cart::session(Auth()->id())->remove($id);
+
         return redirect()->back();
     }
 
@@ -131,14 +132,14 @@ class TransactionController extends Controller
         $cart_total = \Cart::session(Auth()->id())->getTotal();
         $bayar = request()->bayar;
         $kembalian = (int)$bayar - (int)$cart_total;
-               
-        if($kembalian >= 0){  
+
+        if($kembalian >= 0){
             DB::beginTransaction();
 
             try{
 
             $all_cart = \Cart::session(Auth()->id())->getContent();
-           
+
 
             $filterCart = $all_cart->map(function($item){
                 return [
@@ -149,9 +150,9 @@ class TransactionController extends Controller
 
             foreach($filterCart as $cart){
                 $product = Product::find($cart['id']);
-                
+
                 if($product->qty == 0){
-                    return redirect()->back()->with('errorTransaksi','jumlah pembayaran gak valid');  
+                    return redirect()->back()->with('errorTransaksi','jumlah pembayaran gak valid');
                 }
 
                 HistoryProduct::create([
@@ -161,10 +162,10 @@ class TransactionController extends Controller
                     'qtyChange' => -$cart['quantity'],
                     'tipe' => 'decrease from transaction'
                 ]);
-                
+
                 $product->decrement('qty',$cart['quantity']);
             }
-            
+
             $id = IdGenerator::generate(['table' => 'transcations', 'length' => 10, 'prefix' =>'INV-', 'field' => 'invoices_number']);
 
             Transcation::create([
@@ -174,47 +175,47 @@ class TransactionController extends Controller
                 'total' => $cart_total
             ]);
 
-            foreach($filterCart as $cart){    
+            foreach($filterCart as $cart){
 
                 ProductTranscation::create([
                     'product_id' => $cart['id'],
                     'invoices_number' => $id,
                     'qty' => $cart['quantity'],
-                ]);                
+                ]);
             }
 
             \Cart::session(Auth()->id())->clear();
 
-            DB::commit();        
-            return redirect()->back()->with('success','Transaksi Berhasil dilakukan Tahu Coding | Klik History untuk print');        
+            DB::commit();
+            return redirect()->back()->with('success','Transaksi Berhasil dilakukan Tahu Coding | Klik History untuk print');
             }catch(\Exeception $e){
             DB::rollback();
-                return redirect()->back()->with('errorTransaksi','jumlah pembayaran gak valid');        
-            }        
+                return redirect()->back()->with('errorTransaksi','jumlah pembayaran gak valid');
+            }
         }
-        return redirect()->back()->with('errorTransaksi','jumlah pembayaran gak valid');        
+        return redirect()->back()->with('errorTransaksi','jumlah pembayaran gak valid');
 
     }
 
     public function clear(){
-        \Cart::session(Auth()->id())->clear();
+        Cart::session(Auth()->id())->clear();
         return redirect()->back();
     }
 
     public function decreasecart($id){
-        $product = Product::find($id);      
-                
-        $cart = \Cart::session(Auth()->id())->getContent();        
-        $cek_itemId = $cart->whereIn('id', $id); 
+        $product = Product::find($id);
+
+        $cart = \Cart::session(Auth()->id())->getContent();
+        $cek_itemId = $cart->whereIn('id', $id);
 
         if($cek_itemId[$id]->quantity == 1){
-            \Cart::session(Auth()->id())->remove($id);  
+            \Cart::session(Auth()->id())->remove($id);
         }else{
             \Cart::session(Auth()->id())->update($id, array(
             'quantity' => array(
                 'relative' => true,
                 'value' => -1
-            )));            
+            )));
         }
         return redirect()->back();
 
@@ -222,10 +223,10 @@ class TransactionController extends Controller
 
 
     public function increasecart($id){
-        $product = Product::find($id);     
-        
-        $cart = \Cart::session(Auth()->id())->getContent();        
-        $cek_itemId = $cart->whereIn('id', $id); 
+        $product = Product::find($id);
+
+        $cart = \Cart::session(Auth()->id())->getContent();
+        $cek_itemId = $cart->whereIn('id', $id);
 
         if($product->qty == $cek_itemId[$id]->quantity){
             return redirect()->back()->with('error','jumlah item kurang');
@@ -237,7 +238,7 @@ class TransactionController extends Controller
             )));
 
             return redirect()->back();
-        }        
+        }
     }
 
     public function history(){
@@ -250,6 +251,6 @@ class TransactionController extends Controller
         return view('laporan.transaksi',compact('transaksi'));
     }
 
-    
+
 }
 //© 2020 Copyright: Tahu Coding

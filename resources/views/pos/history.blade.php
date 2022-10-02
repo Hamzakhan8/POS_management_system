@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col">
             <div class="card" style="min-height: 85vh">
-                <div class="card-header bg-white"><h4 class="font-weight-bold">History Transcation</h4></div>
+                <div class="card-header bg-white"><h4 class="font-weight-bold">History Transaction</h4></div>
                 <div class="card-body">
                     <table class="table table-sm">
                         <tr>
@@ -23,9 +23,9 @@
                                 <td>{{$item->user->name}}</td>
                                 <td>{{$item->pay}}</td>
                                 <td>{{$item->total}}</td>
-                            <td><a href="{{url('/transcation/laporan', $item->invoices_number )}}" class="btn btn-primary btn-sm"><i class="fas fa-print"></i></a></td>
-                            </tr>
-                        @endforeach                        
+                                <td><a href="{{url('/transcation/laporan', $item->invoices_number )}}" class="btn btn-primary btn-sm"><i class="fas fa-print"></i></a></td>
+                             </tr>
+                        @endforeach
                     </table>
                     <div>{{ $history->links() }}</div>
                 </div>
@@ -33,5 +33,5 @@
     </div>
 </div>
 </div>
-    
+
 @endsection
