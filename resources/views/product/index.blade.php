@@ -9,13 +9,14 @@
                 <div class="card-header bg-white  ">
                     <form action="{{ route('products.index') }}" method="get">
                         <div class="row col-lg-12">
-                            <div class="col-"><h4 class="font-weight-bold">Products</h4></div>
-                            <div class="col-lg-4"><input type="text" name="search"
+                            <div class="col"><h3 class="font-weight-bold">Products</h3></div>
+                            <div class="col-lg-6"><input type="text" name="search"
                                     class="form-control form-control-sm col-sm-10 float-right"
                                     placeholder="Search Product..." onblur="this.form.submit()"></div>
                             <div class="col-sm-2">
                                 <a href="{{ url('/products/create')}}"
-                                class="btn btn-primary btn-lg float-right ">Add Product</a>
+                                style="display: flex;position:relative;left:540px; !important"
+                                class="btn btn-primary btn-md float-right ">AddProduct</a>
                             </div>
                         </div>
                     </form>
@@ -52,6 +53,7 @@
             </div>
         </div>
     </div>
+
  </div>
 </div>
 @endsection
