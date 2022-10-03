@@ -108,7 +108,7 @@
                     <li class="nav-item dropdown header-profile">
                         <a class="nav-link" href="#" role="button" data-toggle="dropdown">
                             <div class="header-info">
-                                <span>Hello, <strong>admin</strong></span>
+                                <span>Hello, <strong> admin</strong></span>
                             </div>
                             <img src="{{asset('images/profile/logo.jpg')}}" width="20" alt=""/>
                         </a>
